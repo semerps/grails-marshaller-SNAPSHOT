@@ -200,7 +200,7 @@ class GenericDomainClassJSONMarshaller implements ObjectMarshaller<JSON> {
 		JSONWriter writer = json.getWriter()
 		writer.object()
 		writer.key("id").value(idValue)
-		writer.key(listTextProperty.fieldName+"ListboxText").value(listTextValue)
+		writer.key(listTextProperty.getName()).value(listTextValue)
 		writer.endObject()
 	}
 
