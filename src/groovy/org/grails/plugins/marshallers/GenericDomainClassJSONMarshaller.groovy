@@ -196,7 +196,7 @@ class GenericDomainClassJSONMarshaller implements ObjectMarshaller<JSON> {
 		else {
 			idValue = extractValue(refObj, idProperty)
 		}
-		listTextProperty = extractValue(refObj, listTextProperty)
+		listTextValue = extractValue(refObj, listTextProperty)
 		JSONWriter writer = json.getWriter()
 		writer.object()
 		writer.key("id").value(idValue)
