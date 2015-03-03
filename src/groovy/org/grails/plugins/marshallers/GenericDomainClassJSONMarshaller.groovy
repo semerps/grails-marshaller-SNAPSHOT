@@ -115,13 +115,18 @@ class GenericDomainClassJSONMarshaller implements ObjectMarshaller<JSON> {
 							}
 							else {
 								GrailsDomainClass referencedDomainClass = property.getReferencedDomainClass()
-
 								// Embedded are now always fully rendered
 								if (referencedDomainClass == null || property.isEmbedded() || GCU.isJdk5Enum(property.getType())) {
 									json.convertAnother(referenceObject)
 								}
 								else if (property.isOneToOne() || property.isManyToOne() || property.isEmbedded()) {
-									asShortObject(referenceObject, json, referencedDomainClass.getIdentifier(), referencedDomainClass)
+									// add listViewTest property
+									String text_field = GCU.getStaticPropertyValue(referencedDomainClass.clazz, "listboxText")
+									if (text_field) {
+										asShortObjectWithListText(referenceObject, json, referencedDomainClass.getIdentifier(), referencedDomainClass.getPropertyByName(text_field), referencedDomainClass)
+									} else {
+										asShortObject(referenceObject, json, referencedDomainClass.getIdentifier(), referencedDomainClass)
+									}
 								}
 								else {
 									GrailsDomainClassProperty referencedIdProperty = referencedDomainClass.getIdentifier()
@@ -176,6 +181,26 @@ class GenericDomainClassJSONMarshaller implements ObjectMarshaller<JSON> {
 		JSONWriter writer = json.getWriter()
 		writer.object()
 		writer.key("id").value(idValue)
+		writer.endObject()
+	}
+	
+	protected void asShortObjectWithListText(Object refObj, JSON json, GrailsDomainClassProperty idProperty, GrailsDomainClassProperty listTextProperty, GrailsDomainClass referencedDomainClass) throws ConverterException {
+		Object idValue
+		Object listTextValue
+		if (proxyHandler instanceof EntityProxyHandler) {
+			idValue = ((EntityProxyHandler) proxyHandler).getProxyIdentifier(refObj)
+			if (idValue == null) {
+				idValue = extractValue(refObj, idProperty)
+			}
+		}
+		else {
+			idValue = extractValue(refObj, idProperty)
+		}
+		listTextProperty = extractValue(refObj, listTextProperty)
+		JSONWriter writer = json.getWriter()
+		writer.object()
+		writer.key("id").value(idValue)
+		writer.key(listTextProperty.fieldName+"ListboxText").value(listTextValue)
 		writer.endObject()
 	}
 
