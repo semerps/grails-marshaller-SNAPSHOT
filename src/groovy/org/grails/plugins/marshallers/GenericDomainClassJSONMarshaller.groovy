@@ -121,9 +121,18 @@ class GenericDomainClassJSONMarshaller implements ObjectMarshaller<JSON> {
 								}
 								else if (property.isOneToOne() || property.isManyToOne() || property.isEmbedded()) {
 									// add listViewTest property
-									String text_field = GCU.getStaticPropertyValue(referencedDomainClass.clazz, "listboxText")
+									Object text_field = GCU.getStaticPropertyValue(referencedDomainClass.clazz, "listboxText")
 									if (text_field) {
-										asShortObjectWithListText(referenceObject, json, referencedDomainClass.getIdentifier(), referencedDomainClass.getPropertyByName(text_field), referencedDomainClass)
+										def ltp = []
+										if (text_field instanceof Collection) {
+											text_field.each {
+												ltp << referencedDomainClass.getPropertyByName(it)
+											}
+										}
+										else {
+											ltp << referencedDomainClass.getPropertyByName(text_field)
+										}
+										asShortObjectWithListText(referenceObject, json, referencedDomainClass.getIdentifier(), ltp, referencedDomainClass)
 									} else {
 										asShortObject(referenceObject, json, referencedDomainClass.getIdentifier(), referencedDomainClass)
 									}
@@ -184,9 +193,8 @@ class GenericDomainClassJSONMarshaller implements ObjectMarshaller<JSON> {
 		writer.endObject()
 	}
 	
-	protected void asShortObjectWithListText(Object refObj, JSON json, GrailsDomainClassProperty idProperty, GrailsDomainClassProperty listTextProperty, GrailsDomainClass referencedDomainClass) throws ConverterException {
+	protected void asShortObjectWithListText(Object refObj, JSON json, GrailsDomainClassProperty idProperty, Collection listTextProperties, GrailsDomainClass referencedDomainClass) throws ConverterException {
 		Object idValue
-		Object listTextValue
 		if (proxyHandler instanceof EntityProxyHandler) {
 			idValue = ((EntityProxyHandler) proxyHandler).getProxyIdentifier(refObj)
 			if (idValue == null) {
@@ -196,11 +204,15 @@ class GenericDomainClassJSONMarshaller implements ObjectMarshaller<JSON> {
 		else {
 			idValue = extractValue(refObj, idProperty)
 		}
-		listTextValue = extractValue(refObj, listTextProperty)
 		JSONWriter writer = json.getWriter()
 		writer.object()
 		writer.key("id").value(idValue)
-		writer.key(listTextProperty.getName()).value(listTextValue)
+		listTextProperties?.each {
+			GrailsDomainClassProperty p = (GrailsDomainClassProperty)it
+			Object listTextValue = extractValue(refObj, p)
+			writer.key(p.name).value(listTextValue)
+		}
+		
 		writer.endObject()
 	}
 
