@@ -1,14 +1,15 @@
 package org.grails.plugins.marshallers.config
-
 import grails.converters.JSON
 import grails.persistence.Entity
+import grails.test.mixin.*
 
-import org.codehaus.groovy.g.*
-import org.codehaus.groovy.grails.web.converters.configuration.ConvertersConfigurationInitializer
-import org.grails.plugins.marshallers.ExtendedConvertersConfigurationInitializer
+import org.codehaus.groovy.grails.web.converters.configuration.ConvertersConfigurationInitializer;
+import org.grails.plugins.marshallers.ExtendedConvertersConfigurationInitializer;
 import org.grails.plugins.marshallers.JsonMarshallerArtefactHandler
 import org.grails.plugins.marshallers.XmlMarshallerArtefactHandler
+import org.grails.plugins.marshallers.test.MarshallerUnitSpecMixin
 
+import spock.lang.Shared;
 import spock.lang.Specification
 
 /**

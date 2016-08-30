@@ -24,10 +24,11 @@ import org.codehaus.groovy.grails.support.proxy.ProxyHandler
 import org.codehaus.groovy.grails.web.converters.configuration.ConvertersConfigurationHolder
 import org.codehaus.groovy.grails.web.converters.configuration.DefaultConverterConfiguration
 import org.grails.plugins.marshallers.config.MarshallingConfig
-import org.grails.plugins.marshallers.config.MarshallingConfigBuilder
 import org.grails.plugins.marshallers.config.MarshallingConfigPool
+import org.grails.plugins.marshallers.config.MarshallingConfigBuilder
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
 
 /**
  * @author Predrag Knezevic
